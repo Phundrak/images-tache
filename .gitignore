@@ -57,3 +57,4 @@ dkms.conf
 /build/CMakeFiles/image-tache.dir/build.make
 
 build/
+/output.bmp

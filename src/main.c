@@ -1,3 +1,5 @@
+#include "utils.h"
+#include "filehandling.h"
 #include <getopt.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -102,12 +104,12 @@ int main(int argc, char *argv[]) {
   }
   if (!output_filename)
     output_filename = default_outname;
-  input_file = fopen(input_filename, "r");
+  input_file = fopen(input_filename, "rb");
   if (!input_file) {
     printf("Could not open file '%s'.\n", input_filename);
     return 1;
   }
-  output_file = fopen(output_filename, "w");
+  output_file = fopen(output_filename, "wb");
   if (!output_file) {
     printf("Could not open file '%s'.\n", output_filename);
     fclose(input_file);
@@ -122,6 +124,9 @@ int main(int argc, char *argv[]) {
       fclose(output_file);
     return 0;
   }
+
+  uchar* test = readBMP(input_file);
+  free(test);
 
   if (input_file)
     fclose(input_file);
