@@ -132,5 +132,7 @@ int main(int argc, char *argv[]) {
     fclose(input_file);
   if (output_file)
     fclose(output_file);
+  free(input_filename);
+  free(output_filename);
   return 0;
 }
