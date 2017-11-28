@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
   char *default_outname = "output.bmp";
   int tolerance;
   int option_index;
+  int a;
   bool do_help;
   bool if_invalid;
 
