@@ -1,61 +1,59 @@
-#include "utils.h"
-#include "filehandling.h"
+/*****************************************************************************/
+/*                             INCLUDE DIRECTIVES                            */
+/*****************************************************************************/
+
+#include "interface.h"
+#include "ppm.h"
+#include "utilities.h"
 #include <getopt.h>
-#include <stdbool.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+
+/*****************************************************************************/
+/*                             DEFINE DIRECTIVES                             */
+/*****************************************************************************/
 
 #define bool _Bool
-#define DEBUG if (1)
-#define PDEB                                                                   \
-  if (1)                                                                       \
-  printf
 
-void printhelp();
-int strcomp(char *, char *);
+/*****************************************************************************/
+/*                              GLOBAL VARIABLES                             */
+/*****************************************************************************/
 
-void printhelp() {
-  printf("Usage: images-tache [options...]\n\n"
-         "Options:\n"
-         "\t-h, --help\n"
-         "\t\tDisplay this.\n"
-         "\t-i <file>, --input-file <file>\n"
-         "\t\tFile to be processed. Unless specified, the default name is "
-         "\"input.bmp\"\n"
-         "\t-o, --output-file\n"
-         "\t\tOutput file. Unless specified, default name is \"output.bmp\"\n"
-         "\t-t <value>, --tolerance <value>\n"
-         "\t\tTolerance on the creation of the color regions, indicated by "
-         "percentage (0 - 100)\n");
-}
+Image_t image;
 
-int strcomp(char *str1, char *str2) {
-  for (; *str1 == *str2 && str1 && str2; ++str1, ++str2)
-    ;
-  return str1 == str2;
-}
+/*****************************************************************************/
+/*                               MAIN FUNCTION                               */
+/*****************************************************************************/
 
 int main(int argc, char *argv[]) {
   char *input_filename = NULL;
   char *default_inname = "input.bmp";
   char *output_filename = NULL;
   char *default_outname = "output.bmp";
-  FILE *input_file;
-  FILE *output_file;
-
   int tolerance;
-  bool do_help = false;
-  bool if_invalid = false;
+  int option_index;
+  bool do_help;
+  bool if_invalid;
+
+  do_help = false;
+  if_invalid = false;
+
   if (argc < 2) { // no arguments, default values
     tolerance = 0;
   } else { // processing arguments
     while (1) {
-      int option_index = 0;
+      option_index = 0;
       static struct option long_options[] = {
+          /* --help or -h requires no argument */
           {"help", no_argument, NULL, 'h'},
+          /* --input-file or -i requires one argument */
           {"input-file", required_argument, NULL, 'i'},
+          /* --output-file or -o requires one argument */
           {"output-file", required_argument, NULL, 'o'},
+          /* --tolerance or -t requires one argument */
           {"tolerance", required_argument, NULL, 't'},
           {0, 0, 0, 0}};
       int c = getopt_long(argc, argv, "i:o:t:h", long_options, &option_index);
@@ -69,69 +67,70 @@ int main(int argc, char *argv[]) {
             printf(" with arg %s\n", optarg);
         }
         break;
-      case 'h':
+      case 'h': /* help */
         do_help = true;
         break;
-      case 'i':
+      case 'i': /* input */
         PDEB("\nFrom main - Option --input-file with value '%s'\n", optarg);
-        input_filename = (char*) malloc(sizeof(optarg));
+        input_filename = (char *)malloc(sizeof(optarg));
         strcpy(input_filename, optarg);
         break;
-      case 'o':
+      case 'o': /* output */
         PDEB("\nFrom main - Option --output-file with value '%s'\n", optarg);
-        output_filename = (char*) malloc(sizeof(optarg));
+        output_filename = (char *)malloc(sizeof(optarg));
         strcpy(output_filename, optarg);
         break;
-      case 't':
+      case 't': /* tolerance (0-100) */
         tolerance = atoi(optarg);
         PDEB("\nFrom main - Option --tolerance with value %d\n", tolerance);
         break;
-      case ':': // missing option argument
+      case ':': /* missing option argument */
         fprintf(stderr, " option %s requires an argument.\n", argv[1]);
         if_invalid = true;
         break;
-      case '?':
+      case '?': /* invalid option */
       default:
         fprintf(stderr, "option %s is invalid: ignored\n", argv[1]);
         if_invalid = true;
         break;
       }
     }
-  } // finished processing arguments
-
-  if (!input_filename) {
-    input_filename = default_inname;
-  }
-  if (!output_filename)
-    output_filename = default_outname;
-  input_file = fopen(input_filename, "rb");
-  if (!input_file) {
-    printf("Could not open file '%s'.\n", input_filename);
-    return 1;
-  }
-  output_file = fopen(output_filename, "wb");
-  if (!output_file) {
-    printf("Could not open file '%s'.\n", output_filename);
-    fclose(input_file);
-    return 1;
-  }
+  } /* finished processing arguments */
 
   if (true == if_invalid || true == do_help) {
     printhelp();
-    if (input_file)
-      fclose(input_file);
-    if (output_file)
-      fclose(output_file);
-    return 0;
+    if (input_filename)
+      free(input_filename);
+    if (output_filename)
+      free(output_filename);
+    return (int)if_invalid;
   }
 
-  uchar* test = readBMP(input_file);
-  free(test);
+  /* applying defaults if not set by arguments */
 
-  if (input_file)
-    fclose(input_file);
-  if (output_file)
-    fclose(output_file);
+  if (!input_filename)
+    input_filename = default_inname;
+  if (!output_filename)
+    output_filename = default_outname;
+
+  /* finished applying defaults */
+
+  /***************************************************************************/
+  /*                              DO STUFF HERE                              */
+  /***************************************************************************/
+
+  glutInit(&argc, argv);
+  glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE);
+  glutInitWindowSize(640, 480);
+  glutInitWindowPosition(100, 100);
+  glutCreateWindow("VPUP8");
+
+  Init(argv[1]);
+
+  /***************************************************************************/
+  /*                                                                         */
+  /***************************************************************************/
+
   free(input_filename);
   free(output_filename);
   return 0;
