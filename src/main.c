@@ -38,9 +38,13 @@ int main(int argc, char *argv[]) {
   int a;
   bool do_help;
   bool if_invalid;
+  bool custom_in;
+  bool custom_out;
 
   do_help = false;
   if_invalid = false;
+  custom_in = false;
+  custom_out = false;
 
   if (argc < 2) { // no arguments, default values
     tolerance = 0;
@@ -72,11 +76,13 @@ int main(int argc, char *argv[]) {
         do_help = true;
         break;
       case 'i': /* input */
+        custom_in = true;
         PDEB("\nFrom main - Option --input-file with value '%s'\n", optarg);
         input_filename = (char *)malloc(sizeof(optarg));
         strcpy(input_filename, optarg);
         break;
       case 'o': /* output */
+        custom_out = true;
         PDEB("\nFrom main - Option --output-file with value '%s'\n", optarg);
         output_filename = (char *)malloc(sizeof(optarg));
         strcpy(output_filename, optarg);
@@ -126,13 +132,17 @@ int main(int argc, char *argv[]) {
   glutInitWindowPosition(100, 100);
   glutCreateWindow("VPUP8");
 
-  Init(argv[1]);
+  Init(input_filename);
 
   /***************************************************************************/
-  /*                                                                         */
+  /*                         CLEANING UP AND LEAVING                         */
   /***************************************************************************/
 
-  free(input_filename);
-  free(output_filename);
+  PDEB("%s: %d\n", __FILE__, __LINE__);
+  if (custom_in)
+    free(input_filename);
+  PDEB("%s: %d\n", __FILE__, __LINE__);
+  if (custom_out)
+    free(output_filename);
   return 0;
 }
