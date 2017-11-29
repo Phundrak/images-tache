@@ -41,6 +41,8 @@ int Init(char *s) {
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
   glutReshapeWindow(image->sizeX, image->sizeY);
 
+  PDEB("%s: %d\n", __FILE__, __LINE__);
+
   return 0;
 }
 

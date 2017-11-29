@@ -90,6 +90,9 @@ int ImageLoad_PPM(char *filename, Image *img) {
       ptrdeb++;
     }
   }
+
+  PDEB("%s: test %d\n", __FILE__, __LINE__);
+
   fclose(fp);
   return 1;
 }
