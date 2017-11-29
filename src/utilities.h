@@ -47,9 +47,9 @@ struct Image {
 };
 
 struct Pixel {
-  char R;
-  char G;
-  char B;
+  char* R;
+  char* G;
+  char* B;
   unsigned long x;
   unsigned long y;
   struct Zone *zone;
