@@ -47,7 +47,7 @@ void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt){
 	}
 	if (pix_to_add(pix, zt) == true){
 		//ajoute le pixel a la liste des pixels de la zone et attribut la zone au Pixel
-		add_area_pix(pix, zt);
+		zone_add_pix(zt, pix);
 		runnig_area(pix, img, zt);
 	}
 }
@@ -57,9 +57,7 @@ void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt){
 void map_area(struct Pixel *pix, struct Image *img){
 	struct Zone *zt;
 
-	zt = (struct Zone *)malloc(sizeof(struct Zone));
-	add_area_pix(pix, zt);
-	add_area_img(img, pix);
+	zt = new_zone(img,pix);
 	running_area(pix, img, zt);
 }
 
