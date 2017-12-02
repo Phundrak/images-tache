@@ -1,3 +1,12 @@
+/**
+ *   \file main.c
+ *   \brief Fichier principal
+ *
+ *  Fichier hôte de la fonction `main`, appelle les ouvertures, analyses,
+ *  écritures et fermetures de fichiers.
+ *
+ */
+
 /*****************************************************************************/
 /*                             INCLUDE DIRECTIVES                            */
 /*****************************************************************************/
@@ -22,7 +31,7 @@
 /*                              GLOBAL VARIABLES                             */
 /*****************************************************************************/
 
-Image_t image;
+Image_t image; /*!< Variable globale de l'image */
 
 /*****************************************************************************/
 /*                               MAIN FUNCTION                               */
@@ -30,12 +39,12 @@ Image_t image;
 
 int main(int argc, char *argv[]) {
   char *input_filename = NULL;
-  char *default_inname = "input.bmp";
+  char *default_inname = "input.ppm";
   char *output_filename = NULL;
-  char *default_outname = "output.bmp";
+  char *default_outname = "output.ppm";
   int tolerance;
   int option_index;
-  int a;
+  int a, c;
   bool do_help;
   bool if_invalid;
   bool custom_in;
@@ -46,22 +55,24 @@ int main(int argc, char *argv[]) {
   custom_in = false;
   custom_out = false;
 
-  if (argc < 2) { // no arguments, default values
+  /* Traitement des paramètres d'exécution */
+
+  if (argc < 2) { // pas d'argument, valeurs par défaut
     tolerance = 0;
   } else { // processing arguments
     while (1) {
       option_index = 0;
       static struct option long_options[] = {
-          /* --help or -h requires no argument */
+          /* --help ou -h requière un argument */
           {"help", no_argument, NULL, 'h'},
-          /* --input-file or -i requires one argument */
+          /* --input-file ou -i requière un argument */
           {"input-file", required_argument, NULL, 'i'},
-          /* --output-file or -o requires one argument */
+          /* --output-file ou -o requière un argument */
           {"output-file", required_argument, NULL, 'o'},
-          /* --tolerance or -t requires one argument */
+          /* --tolerance ou -t requière un argument */
           {"tolerance", required_argument, NULL, 't'},
           {0, 0, 0, 0}};
-      int c = getopt_long(argc, argv, "i:o:t:h", long_options, &option_index);
+      c = getopt_long(argc, argv, "i:o:t:h", long_options, &option_index);
       if (c == -1)
         break;
       switch (c) {
@@ -122,10 +133,6 @@ int main(int argc, char *argv[]) {
 
   /* finished applying defaults */
 
-  /***************************************************************************/
-  /*                              DO STUFF HERE                              */
-  /***************************************************************************/
-
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE);
   glutInitWindowSize(640, 480);
@@ -135,13 +142,24 @@ int main(int argc, char *argv[]) {
   Init(input_filename);
 
   /***************************************************************************/
+  /*                              DO STUFF HERE                              */
+  /***************************************************************************/
+
+  /* processing */
+
+  /* écriture du résultat */
+  imagesave_PPM(output_filename, image);
+
+  /***************************************************************************/
   /*                         CLEANING UP AND LEAVING                         */
   /***************************************************************************/
 
-  PDEB("%s: %d\n", __FILE__, __LINE__);
+  delete (image);
+
+  PDEB("%s:%d freeing `input_filename`\n", __FILE__, __LINE__);
   if (custom_in)
     free(input_filename);
-  PDEB("%s: %d\n", __FILE__, __LINE__);
+  PDEB("%s:%d freeing `output_filename`\n", __FILE__, __LINE__);
   if (custom_out)
     free(output_filename);
   return 0;

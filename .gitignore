@@ -50,12 +50,8 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
-/debug/image-tache
-/build/Makefile
-/build/CMakeFiles/Makefile2
-/input.bmp
-/build/CMakeFiles/image-tache.dir/build.make
 
-build/
+/input.bmp
 /output.bmp
 /bin/image-tache
+/output.ppm

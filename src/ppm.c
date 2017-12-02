@@ -1,3 +1,10 @@
+/**
+ *   \file ppm.c
+ *   \brief Fichier de déclaration des fonctions de manipulation d'images ppm
+ *
+ *  Déclaration du corps des fonctions déclarées dans \ref ppm.h
+ */
+
 #include "ppm.h"
 #include "utilities.h"
 #include <assert.h>
@@ -11,8 +18,9 @@
 int ImageLoad_PPM(char *filename, Image *img) {
   char d, buff[16];
   FILE *fp;
-  int b, c, rgb_comp_color, size, sizex, sizey;
+  int b, c, i, rgb_comp_color, size, sizex, sizey;
   GLubyte tmp, *ptrdeb, *ptrfin, *lastline;
+  Pixel_t pix;
 
   /* open PPM file for reading */
   fp = fopen(filename, "rb");
@@ -70,7 +78,7 @@ int ImageLoad_PPM(char *filename, Image *img) {
   /* read pixel data from file */
   if (fread(img->data, (size_t)1, (size_t)size, fp) == 0) {
     fprintf(stderr, "Error loading image '%s'\n", filename);
-    /* exit(1); */
+    exit(1);
   }
 
   /* remettre l'image dans le bon sens */
@@ -91,7 +99,13 @@ int ImageLoad_PPM(char *filename, Image *img) {
     }
   }
 
-  PDEB("%s: test %d\n", __FILE__, __LINE__);
+  PDEB("%s:%d Image loaded, generating pixel strucs\n", __FILE__, __LINE__);
+
+  img->pixels = (Pixel_t *)malloc(sizeof(Pixel_t) * img->sizeX * img->sizeY);
+  for (i = 0; i < size; i += 3)
+    img->pixels[i / 3] =
+        new_pixel(&img->data[i], &img->data[i + 1], &img->data[i + 2],
+                  i % img->sizeX, i / img->sizeY);
 
   fclose(fp);
   return 1;
