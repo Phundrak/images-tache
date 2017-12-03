@@ -1,5 +1,6 @@
 #include "utilities.h"
-
+#include <math.h>
+#define TOLERANCE 15
 
 
 //la fonction test si le pixel appartien a une Zone
@@ -19,9 +20,9 @@ bool pix_already_in_area(struct Pixel *pix, struct Zone *zt){
 
 bool pix_to_add(struct Pixel *pix, struct Zone *zt){
 	int diff_R, diff_G, diff_B;
-	diff_R((abs((int)zt->R - (int)pix->R)) * 100 / 255;
-	diff_G((abs((int)zt->G - (int)pix->G)) * 100 / 255;
-	diff_B((abs((int)zt->B - (int)pix->B)) * 100 / 255;
+	diff_R = ((abs((int)zt->R - (int)pix->R)) * 100 / 255);
+	diff_G = ((abs((int)zt->G - (int)pix->G)) * 100 / 255);
+	diff_B = ((abs((int)zt->B - (int)pix->B)) * 100 / 255);
 	return (((diff_R + diff_G + diff_B) / 3) <= TOLERANCE);
 }
 
