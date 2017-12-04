@@ -47,21 +47,21 @@ void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt){
 			printf("pix_already_in_area ne segfault pas\n");
 			//test si le pixel de droite est dans les borne
 			printf("entree dans le pixel de droite\n");
-			if ((*pix).x + 1 < (*img).sizeX){
+			if ((*pix).x + 1 < (*img).sizeX && (*pix).y < (*img).sizeY){
 				printf("putin il rentre bien dedans\n");
 				running_area(pix_at_img(img, pix->x + 1, pix->y), img, zt);
 			}
 			//test si le pixel du bas est dans les borne
 			printf("entree dans le pixel du bas\n");
-			if ((*pix).y + 1 < (*img).sizeY)
+			if ((*pix).y + 1 < (*img).sizeY && (*pix).x < (*img).sizeX)
 				running_area(pix_at_img(img, pix->x, pix->y + 1), img, zt);
 			//test si le pixel de gauche est dans les borne
 			printf("entree dans le pixel de gauche\n");
-			if ((*pix).x - 1 < (*img).sizeX)
+			if ((*pix).x - 1 < (*img).sizeX && (*pix).y < (*img).sizeY)
 				running_area(pix_at_img(img, pix->x - 1, pix->y), img, zt);
 			//test si le pixel du haut est dans les borne
 			printf("entree dans le pixel du haut\n");
-			if ((*pix).y - 1 < (*img).sizeY)
+			if ((*pix).y - 1 < (*img).sizeY && (*pix).x < (*img).sizeX)
 				running_area(pix_at_img(img, pix->x, pix->y - 1), img, zt);
 		}
 		else
