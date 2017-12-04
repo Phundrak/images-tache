@@ -23,7 +23,7 @@
  *  \param[in] x Position horizontale de la souris
  *  \param[in] y Position verticale de la souris
  */
-void Keyboard(unsigned char key, int x, int y);
+/* void Keyboard(unsigned char key, int x, int y); */
 
 /**
  *  \brief Fonction OpenGL gérant les interactions souris
@@ -32,7 +32,7 @@ void Keyboard(unsigned char key, int x, int y);
  *  \param[in] x Position horizontale de la souris
  *  \param[in] y Position verticale de la souris
  */
-void Mouse(int button, int state, int x, int y);
+/* void Mouse(int button, int state, int x, int y); */
 
 /**
  *  \brief Initialisation de l’image
@@ -54,11 +54,11 @@ int Init(char *s);
  *
  *  \return Retourne 0 en cas de succès
  */
-int ReInit();
+/* int ReInit(); */
 
 /**
  *  \brief Affichage de l’image
  */
-void Display();
+/* void Display(); */
 
 #endif /* IMGTACHES_SRC_INTERFACE_H_ */

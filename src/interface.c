@@ -45,12 +45,12 @@ int Init(char *s) {
     return -1;
   printf("Tailles: %d %d\n", (int)image->sizeX, (int)image->sizeY);
 
-  glClearColor(0.0, 0.0, 0.0, 0.0);
-  glShadeModel(GL_FLAT);
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  glutReshapeWindow(image->sizeX, image->sizeY);
+  /* glClearColor(0.0, 0.0, 0.0, 0.0); */
+  /* glShadeModel(GL_FLAT); */
+  /* glPixelStorei(GL_UNPACK_ALIGNMENT, 1); */
+  /* glutReshapeWindow(image->sizeX, image->sizeY); */
 
-  PDEB("%s:%d Image loaded and displayed\n", __FILE__, __LINE__);
+  /* PDEB("%s:%d Image loaded and displayed\n", __FILE__, __LINE__); */
 
   return 0;
 }
