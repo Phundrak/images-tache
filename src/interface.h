@@ -13,27 +13,6 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-#define ESCAPE 27
-#define SHIFTQ 81
-#define LOWQ 113
-
-/**
- *  \brief Fonction OpenGL gérant le clavier
- *  \param[in] key Touche pressée lors de l’exécution de la fonction
- *  \param[in] x Position horizontale de la souris
- *  \param[in] y Position verticale de la souris
- */
-/* void Keyboard(unsigned char key, int x, int y); */
-
-/**
- *  \brief Fonction OpenGL gérant les interactions souris
- *  \param[in] button Bouton cliqué de la souris
- *  \param[in] state État du clic
- *  \param[in] x Position horizontale de la souris
- *  \param[in] y Position verticale de la souris
- */
-/* void Mouse(int button, int state, int x, int y); */
-
 /**
  *  \brief Initialisation de l’image
  *
@@ -46,19 +25,5 @@
  *  \return Retourne -1 en cas d'échec, 0 en cas de succès
  */
 int Init(char *s);
-
-/**
- *  \brief Rafraîchissement de l'affichage
- *
- *  Renvoie 0 si le rafraîchissement de l’affichage s’est correctement effectué
- *
- *  \return Retourne 0 en cas de succès
- */
-/* int ReInit(); */
-
-/**
- *  \brief Affichage de l’image
- */
-/* void Display(); */
 
 #endif /* IMGTACHES_SRC_INTERFACE_H_ */
