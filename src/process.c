@@ -13,7 +13,7 @@ bool test_exist(struct Pixel *pix){
 
 //la fonction test si le pixel appartien deja a la zone en argument
 bool pix_already_in_area(struct Pixel *pix, struct Zone *zt){
-	if ((strcomp((&pix->zone->R, &zt->R) == true) && (strcomp(&pix->zone->G, &zt->G) == true) && (strcomp(&pix->zone->B, &zt->B) == true))
+	if ((pix->zone->R == zt->R) && (pix->zone->G == zt->G) && (pix->zone->B == zt->B))
 		return true;
 	return false;
 }
@@ -32,9 +32,9 @@ bool pix_to_add(struct Pixel *pix, struct Zone *zt){
 //elle iter sur ces dit pixel et les ajoute jusqua ce que le Pixel tester ne soit
 //plus dans la tolerence
 void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt){
-	if (test_exist(pix) == true){
+	if (test_exist(pix)){
 		//test si le pixel appartien deja a une zone
-		if (pix_already_in_area(pix, zt) == true){
+		if (pix_already_in_area(pix, zt)){
 			//test si le pixel de droite est dans les borne
 			if ((*pix).x + 1 < (*img).sizeX)
 				running_area(pix_at_img(img, pix->x + 1, pix->y), img, zt);
@@ -51,7 +51,7 @@ void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt){
 		else
 			return;
 	}
-	if (pix_to_add(pix, zt) == true){
+	if (pix_to_add(pix, zt)){
 		//ajoute le pixel a la liste des pixels de la zone et attribut la zone au Pixel
 		zone_add_pix(zt, pix);
 		running_area(pix, img, zt);
