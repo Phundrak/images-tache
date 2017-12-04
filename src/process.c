@@ -37,32 +37,34 @@ void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt){
 		printf("test_exist de running_area ne segfault pas\n");
 		//test si le pixel appartien deja a une zone
 		if (pix_already_in_area(pix, zt)){
-			printf("x = %lu\n", (*pix).x);
-			printf("y = %lu\n", (*pix).y);
-			printf("sizeX = %lu\n", (*img).sizeX);
-			printf("sizeY = %lu\n", (*img).sizeY);
-			printf("x - 1 = %lu\n", (*pix).x - 1);
-			printf("x + 1 = %lu\n", (*pix).x + 1);
-			printf("y - 1 = %lu\n", (*pix).y - 1);
-			printf("y + 1 = %lu\n", (*pix).y + 1);
+			DEBUG {
+        printf("x = %lu\n", (*pix).x);
+        printf("y = %lu\n", (*pix).y);
+        printf("sizeX = %lu\n", (*img).sizeX);
+        printf("sizeY = %lu\n", (*img).sizeY);
+        printf("x - 1 = %lu\n", (*pix).x - 1);
+        printf("x + 1 = %lu\n", (*pix).x + 1);
+        printf("y - 1 = %lu\n", (*pix).y - 1);
+        printf("y + 1 = %lu\n", (*pix).y + 1);
+      }
 			//test si le pixel de droite est dans les borne
 			if ((*pix).x + 1 < (*img).sizeX && (*pix).y < (*img).sizeY){
-				printf("lacement de runnig_area avec x + 1\n");
+				PDEB("lacement de runnig_area avec x + 1\n");
 				running_area(pix_at_img(img, pix->x + 1, pix->y), img, zt);
 			}
 			//test si le pixel du bas est dans les borne
 			if ((*pix).y + 1 < (*img).sizeY && (*pix).x < (*img).sizeX){
-				printf("lacement de runnig_area avec y + 1\n");
+				PDEB("lacement de runnig_area avec y + 1\n");
 				running_area(pix_at_img(img, pix->x, pix->y + 1), img, zt);
 			}
 			//test si le pixel de gauche est dans les borne
 			if ((*pix).x - 1 < (*img).sizeX && (*pix).y < (*img).sizeY){
-				printf("lacement de runnig_area avec x - 1\n");
+			  PDEB("lacement de runnig_area avec x - 1\n");
 				running_area(pix_at_img(img, pix->x - 1, pix->y), img, zt);
 			}
 			//test si le pixel du haut est dans les borne
 			if ((*pix).y - 1 < (*img).sizeY && (*pix).x < (*img).sizeX){
-				printf("lacement de runnig_area avec y - 1\n");
+			  PDEB("lacement de runnig_area avec y - 1\n");
 				running_area(pix_at_img(img, pix->x, pix->y - 1), img, zt);
 			}
 		}
@@ -70,10 +72,10 @@ void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt){
 			return;
 	}
 	if (pix_to_add(pix, zt)){
-		printf("pix_to_add ne segfault\n");
+	  PDEB("pix_to_add ne segfault\n");
 		//ajoute le pixel a la liste des pixels de la zone et attribut la zone au Pixel
 		zone_add_pix(zt, pix);
-		printf("zone_add_pix ne segfault pas\n");
+	  PDEB("zone_add_pix ne segfault pas\n");
 		running_area(pix, img, zt);
 	}
 }
@@ -83,29 +85,29 @@ void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt){
 void map_area(struct Pixel *pix, struct Image *img){
 	struct Zone *zt;
 
-	printf("avant la creation de la zone\n");
+  PDEB("avant la creation de la zone\n");
 	zt = new_zone(img,pix);
-	printf("apres la creation de la zone\n");
-	printf("avant l ajout de la zone a l image\n");
+  PDEB("apres la creation de la zone\n");
+  PDEB("avant l ajout de la zone a l image\n");
 	img_add_zone(img, zt);
-	printf("apres l ajout de la zone a l image\n");
+  PDEB("apres l ajout de la zone a l image\n");
 	running_area(pix, img, zt);
-	printf("fin running_area\n");
+  PDEB("fin running_area\n");
 }
 
 //la fonction parcour pixel par pixel l image
 void process(struct Image *img){
 	unsigned long x, y;
-	printf("debut du parcour du tableau\n");
+  PDEB("debut du parcour du tableau\n");
 	for(y = 0; y < (*img).sizeY; y++){
-		printf("parcoure de la ligne %lu : \n", y);
+	  PDEB("parcoure de la ligne %lu : \n", y);
 		for(x = 0; x < (*img).sizeX; x++){
-			printf("parcour du pixel %lu : \n", x);
+		  PDEB("parcour du pixel %lu : \n", x);
 			//check si le pixel actuel possede deja une Zone
 			if (test_exist(pix_at_img(img,x,y)) == false){
-				printf("test_exist ne segfault pas\n");
+			  PDEB("test_exist ne segfault pas\n");
 				map_area(pix_at_img(img, x, y), img);
-				printf("fin du mapping\n");
+			  PDEB("fin du mapping\n");
 			}
 		}
 	}
