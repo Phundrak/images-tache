@@ -13,9 +13,7 @@ bool test_exist(struct Pixel *pix){
 
 //la fonction test si le pixel appartien deja a la zone en argument
 bool pix_already_in_area(struct Pixel *pix, struct Zone *zt){
-	if ((pix->zone->R == zt->R) && (pix->zone->G == zt->G) && (pix->zone->B == zt->B))
-		return true;
-	return false;
+	return pix->zone == zt;
 }
 
 //la fonction teste si le pixel appartien a la tolerance de la zone
@@ -32,9 +30,9 @@ bool pix_to_add(struct Pixel *pix, struct Zone *zt){
 //elle iter sur ces dit pixel et les ajoute jusqua ce que le Pixel tester ne soit
 //plus dans la tolerence
 void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt){
-	printf("debut du running area\n");
+	PDEB("debut du running area\n");
 	if (test_exist(pix)){
-		printf("test_exist de running_area ne segfault pas\n");
+		PDEB("test_exist de running_area ne segfault pas\n");
 		//test si le pixel appartien deja a une zone
 		if (pix_already_in_area(pix, zt)){
 			DEBUG {
