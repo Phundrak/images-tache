@@ -10,14 +10,15 @@ bool test_exist(struct Pixel *pix){
 	return true;
 }
 
-/*
+
 //la fonction test si le pixel appartien deja a la zone en argument
 bool pix_already_in_area(struct Pixel *pix, struct Zone *zt){
-	if ((pix->zone->R != zt->R) && (pix->zone->G != zt->G) && (pix->zone->B != zt->B))
-		return false;
-	return true;
-}*/
+	if ((strcomp((&pix->zone->R, &zt->R) == true) && (strcomp(&pix->zone->G, &zt->G) == true) && (strcomp(&pix->zone->B, &zt->B) == true))
+		return true;
+	return false;
+}
 
+//la fonction teste si le pixel appartien a la tolerance de la zone
 bool pix_to_add(struct Pixel *pix, struct Zone *zt){
 	int diff_R, diff_G, diff_B;
 	diff_R = ((abs((int)(*zt).R - (int)(*pix).R)) * 100 / 255);
@@ -31,20 +32,24 @@ bool pix_to_add(struct Pixel *pix, struct Zone *zt){
 //elle iter sur ces dit pixel et les ajoute jusqua ce que le Pixel tester ne soit
 //plus dans la tolerence
 void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt){
-	//test si le pixel appartien deja a une zone
 	if (test_exist(pix) == true){
-		//test si le pixel de droite est dans les borne
-		if ((*pix).x + 1 < (*img).sizeX)
-			running_area(pix_at_img(img, pix->x + 1, pix->y), img, zt);
-		//test si le pixel du haut est dans les borne
-		if ((*pix).y + 1 < (*img).sizeY)
-			running_area(pix_at_img(img, pix->x, pix->y + 1), img, zt);
-		//test si le pixel de gauche est dans les borne
-		if ((*pix).x - 1 > 0)
-			running_area(pix_at_img(img, pix->x - 1, pix->y), img, zt);
-		//test si le pixel du bas est dans les borne
-		if ((*pix).y - 1 > 0)
-			running_area(pix_at_img(img, pix->x, pix->y - 1), img, zt);
+		//test si le pixel appartien deja a une zone
+		if (pix_already_in_area(pix, zt) == true){
+			//test si le pixel de droite est dans les borne
+			if ((*pix).x + 1 < (*img).sizeX)
+				running_area(pix_at_img(img, pix->x + 1, pix->y), img, zt);
+			//test si le pixel du haut est dans les borne
+			if ((*pix).y + 1 < (*img).sizeY)
+				running_area(pix_at_img(img, pix->x, pix->y + 1), img, zt);
+			//test si le pixel de gauche est dans les borne
+			if ((*pix).x - 1 > 0)
+				running_area(pix_at_img(img, pix->x - 1, pix->y), img, zt);
+			//test si le pixel du bas est dans les borne
+			if ((*pix).y - 1 > 0)
+				running_area(pix_at_img(img, pix->x, pix->y - 1), img, zt);
+		}
+		else
+			return;
 	}
 	if (pix_to_add(pix, zt) == true){
 		//ajoute le pixel a la liste des pixels de la zone et attribut la zone au Pixel

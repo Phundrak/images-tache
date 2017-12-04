@@ -6,36 +6,36 @@ bool pix_is_border(struct Image *img, struct Pixel *pix, struct Zone *z){
 		p = pix_at_img(img , (*pix).x + 1, (*pix).y);
 		if (strcomp(&p->zone->R, &z->R) == true)
 			return true;
-		if (strcomp(&p->zone->R, &z->R) == true)
+		if (strcomp(&p->zone->G, &z->G) == true)
 			return true;
-		if (strcomp(&p->zone->R, &z->R) == true)
+		if (strcomp(&p->zone->B, &z->B) == true)
 			return true;
 	}
 	if ((*pix).x > 0){
 		p = pix_at_img(img , pix->x - 1, pix->y);
 		if (strcomp(&p->zone->R, &z->R) == true)
 			return true;
-		if (strcomp(&p->zone->R, &z->R) == true)
+		if (strcomp(&p->zone->G, &z->G) == true)
 			return true;
-		if (strcomp(&p->zone->R, &z->R) == true)
+		if (strcomp(&p->zone->B, &z->B) == true)
 			return true;
 	}
 	if ((*pix).y < (*img).sizeY + 1){
 		p = pix_at_img(img , pix->x, pix->y + 1);
 		if (strcomp(&p->zone->R, &z->R) == true)
 			return true;
-		if (strcomp(&p->zone->R, &z->R) == true)
+		if (strcomp(&p->zone->G, &z->G) == true)
 			return true;
-		if (strcomp(&p->zone->R, &z->R) == true)
+		if (strcomp(&p->zone->B, &z->B) == true)
 			return true;
 	}
 	if ((*pix).y > 0){
 		p = pix_at_img(img , pix->x, pix->y - 1);
 		if (strcomp(&p->zone->R, &z->R) == true)
 			return true;
-		if (strcomp(&p->zone->R, &z->R) == true)
+		if (strcomp(&p->zone->G, &z->G) == true)
 			return true;
-		if (strcomp(&p->zone->R, &z->R) == true)
+		if (strcomp(&p->zone->B, &z->B) == true)
 			return true;
 	}
 	return false;
