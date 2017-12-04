@@ -32,6 +32,7 @@ bool pix_to_add(struct Pixel *pix, struct Zone *zt){
 //elle iter sur ces dit pixel et les ajoute jusqua ce que le Pixel tester ne soit
 //plus dans la tolerence
 void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt){
+	printf("debut du running area\n");
 	if (test_exist(pix)){
 		printf("test_exist de running_area ne segfault pas\n");
 		//test si le pixel appartien deja a une zone
@@ -44,25 +45,26 @@ void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt){
 			printf("x + 1 = %lu\n", (*pix).x + 1);
 			printf("y - 1 = %lu\n", (*pix).y - 1);
 			printf("y + 1 = %lu\n", (*pix).y + 1);
-			printf("pix_already_in_area ne segfault pas\n");
 			//test si le pixel de droite est dans les borne
-			printf("entree dans le pixel de droite\n");
 			if ((*pix).x + 1 < (*img).sizeX && (*pix).y < (*img).sizeY){
-				printf("putin il rentre bien dedans\n");
+				printf("lacement de runnig_area avec x + 1\n");
 				running_area(pix_at_img(img, pix->x + 1, pix->y), img, zt);
 			}
 			//test si le pixel du bas est dans les borne
-			printf("entree dans le pixel du bas\n");
-			if ((*pix).y + 1 < (*img).sizeY && (*pix).x < (*img).sizeX)
+			if ((*pix).y + 1 < (*img).sizeY && (*pix).x < (*img).sizeX){
+				printf("lacement de runnig_area avec y + 1\n");
 				running_area(pix_at_img(img, pix->x, pix->y + 1), img, zt);
+			}
 			//test si le pixel de gauche est dans les borne
-			printf("entree dans le pixel de gauche\n");
-			if ((*pix).x - 1 < (*img).sizeX && (*pix).y < (*img).sizeY)
+			if ((*pix).x - 1 < (*img).sizeX && (*pix).y < (*img).sizeY){
+				printf("lacement de runnig_area avec x - 1\n");
 				running_area(pix_at_img(img, pix->x - 1, pix->y), img, zt);
+			}
 			//test si le pixel du haut est dans les borne
-			printf("entree dans le pixel du haut\n");
-			if ((*pix).y - 1 < (*img).sizeY && (*pix).x < (*img).sizeX)
+			if ((*pix).y - 1 < (*img).sizeY && (*pix).x < (*img).sizeX){
+				printf("lacement de runnig_area avec y - 1\n");
 				running_area(pix_at_img(img, pix->x, pix->y - 1), img, zt);
+			}
 		}
 		else
 			return;
@@ -87,9 +89,8 @@ void map_area(struct Pixel *pix, struct Image *img){
 	printf("avant l ajout de la zone a l image\n");
 	img_add_zone(img, zt);
 	printf("apres l ajout de la zone a l image\n");
-	printf("avan la fonction running_area\n");
 	running_area(pix, img, zt);
-	printf("apres la fonction running_area\n");
+	printf("fin running_area\n");
 }
 
 //la fonction parcour pixel par pixel l image
