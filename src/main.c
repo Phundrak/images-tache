@@ -133,12 +133,6 @@ int main(int argc, char *argv[]) {
 
   /* finished applying defaults */
 
-  glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE);
-  glutInitWindowSize(640, 480);
-  glutInitWindowPosition(100, 100);
-  glutCreateWindow("VPUP8");
-
   Init(input_filename);
 
   /***************************************************************************/
