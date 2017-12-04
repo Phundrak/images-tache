@@ -67,3 +67,9 @@ rapport\.pdf
 rapport\.tex
 
 _minted-rapport/
+
+\.idea/
+
+cmake-build-debug/
+
+input\.ppm
