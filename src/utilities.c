@@ -120,6 +120,10 @@ Pixel_t new_pixel(unsigned char *R, unsigned char *G, unsigned char *B,
   return pixel;
 }
 
+int abs(int x){
+	return (x < 0) ? -x : x;
+}
+
 /* delete ********************************************************************/
 
 void delete (Image_t img) {

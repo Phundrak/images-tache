@@ -136,6 +136,8 @@ void printhelp();
  */
 bool strcomp(char *str1, char *str2);
 
+int abs(int x);
+
 /**
  *  \brief Ajoute une zone à une image
  *
