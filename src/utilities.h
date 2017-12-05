@@ -150,6 +150,19 @@ int abs(int x);
  */
 void img_add_zone(Image_t img, Zone_t zone);
 
+
+/**
+ *  \brief Test si la zone du pixel est egal a la zone en parametre
+ *
+ *  La fonction test si le pointeur de struct Zone du pixel est egal a la Zone
+ *
+ *  \param[in] pix struct Pixel contenant les donnees du pixel
+ *  \param[in] zt struct Zone contenant les information de la zone
+ *  \return renvoie `true` si les pointeur sur zone sont egaux
+ *                 `false` sinon
+ */
+bool pix_in_area(struct Pixel *pix, struct Zone *zt);
+
 /**
  *  \brief Créé et initialise une zone
  *

@@ -56,6 +56,11 @@ void img_add_zone(Image_t img, Zone_t zone) {
   (*img).zones[img->nb_zones++] = zone;
 }
 
+
+bool pix_in_area(struct Pixel *pix, struct Zone *zt) {
+    return pix->zone == zt;
+}
+
 /* new_zone ******************************************************************/
 
 Zone_t new_zone(Image_t img, Pixel_t pix) {

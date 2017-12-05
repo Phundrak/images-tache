@@ -6,10 +6,6 @@ unsigned long nb_appels;
 
 bool test_exist(struct Pixel *pix) { return !pix->zone ? false : true; }
 
-bool pix_already_in_area(struct Pixel *pix, struct Zone *zt) {
-  return pix->zone == zt;
-}
-
 bool pix_to_add(struct Pixel *pix, struct Zone *zt) {
   int diff_R, diff_G, diff_B;
   diff_R = (abs((int)zt->R - (int)*pix->R) * 100) / 255;
@@ -23,7 +19,7 @@ void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt) {
   PDEB("%lu: debut du running area\n", ++nb_appels);
   if (test_exist(pix)) {
     PDEB("test_exist de running_area ne segfault pas\n");
-    if (pix_already_in_area(pix, zt)) {
+    if (pix_in_area(pix, zt)) {
       DEBUG {
         printf("x = %lu\n", (*pix).x);
         printf("y = %lu\n", (*pix).y);

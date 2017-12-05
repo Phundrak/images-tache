@@ -19,20 +19,20 @@
 
 
 /**
- * \brief Creation d'une nouvelle zone et lancement de running_area
+ *    \brief Creation d'une nouvelle zone et lancement de running_area
  *
- * la fonction cree une nouvelle zone avec les valeur du pixel passez
- * en parametre ajoute cette zone a la liste des zone dans la struct Image
- * lance la fonction running_area
+ *  la fonction cree une nouvelle zone avec les valeur du pixel passez
+ *  en parametre ajoute cette zone a la liste des zone dans la struct Image
+ *  lance la fonction running_area
  *
- * \param[in] pix struct Pixel contenant les information du pixel
- * \param[in] img struct Image contenant les donnees de l'image
+ *  \param[in] pix \ref Pixel contenant les information du pixel
+ *  \param[in] img \ref Image contenant les données de l'image
  */
  void map_area(struct Pixel *pix, struct Image *img);
 
 
 /**
- * \brief Parcour les pixels adjacent au pixel de la appartenant a la zone
+ *   \brief Parcour les pixels adjacent au pixel de la appartenant a la zone
  *
  * test si le pixel appartien a une zone 
  *   test si le pixel appartien a la zone passez en parametre
@@ -48,19 +48,6 @@
  *     \param[in] zt struct Zone contenant les information de la zone
  */
  void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt);
-
-
-/**
- * \brief Test si la zone du pixel est egal a la zone en parametre
- *
- * La fonction test si le pointeur de struct Zone du pixel est egal a la Zone
- *
- * \param[in] pix struct Pixel contenant les donnees du pixel
- * \param[in] zt struct Zone contenant les information de la zone
- * \return renvoie `true` si les pointeur sur zone sont egaux 
- *                 `false` sinon
- */
- bool pix_already_in_area(struct Pixel *pix, struct Zone *zt);
 
 
 /**
