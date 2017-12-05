@@ -46,12 +46,19 @@ void img_add_zone(Image_t img, Zone_t zone) {
     (*img).capacity *= 2;
     temp = img->zones;
     (*img).zones = (Zone_t *)malloc(img->capacity * sizeof(Zone_t));
+    for (i = 0; i < img->capacity; i++)
+      (*img).zones[i] = NULL;
     for (i = 0; i < img->nb_zones; i++)
       (*img).zones[i] = temp[i];
     free(temp);
   }
 
   (*img).zones[img->nb_zones++] = zone;
+}
+
+
+bool pix_in_area(struct Pixel *pix, struct Zone *zt) {
+    return pix->zone == zt;
 }
 
 /* new_zone ******************************************************************/
@@ -119,6 +126,8 @@ Pixel_t new_pixel(unsigned char *R, unsigned char *G, unsigned char *B,
   (*pixel).zone = NULL;
   return pixel;
 }
+
+int abs(int x) { return (x < 0) ? -x : x; }
 
 /* delete ********************************************************************/
 

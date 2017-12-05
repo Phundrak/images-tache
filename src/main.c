@@ -14,6 +14,8 @@
 #include "interface.h"
 #include "ppm.h"
 #include "utilities.h"
+#include "process.h"
+#include "black_border.h"
 #include <getopt.h>
 #include <math.h>
 #include <stdio.h>
@@ -140,7 +142,11 @@ int main(int argc, char *argv[]) {
   /***************************************************************************/
 
   /* processing */
-
+  printf("avant process\n");
+  process(image);
+  printf("apres process\n");
+  for (a= 0; a < image->nb_zones; a++)
+	black_border(image, image->zones[a]);
   /* écriture du résultat */
   imagesave_PPM(output_filename, image);
 
