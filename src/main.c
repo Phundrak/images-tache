@@ -14,6 +14,8 @@
 #include "interface.h"
 #include "ppm.h"
 #include "utilities.h"
+#include "process.h"
+#include "black_border.h"
 #include <getopt.h>
 #include <math.h>
 #include <stdio.h>
@@ -32,6 +34,7 @@
 /*****************************************************************************/
 
 Image_t image; /*!< Variable globale de l'image */
+int tolerance; /*!< Variable globale pour la tolérance couleur */
 
 /*****************************************************************************/
 /*                               MAIN FUNCTION                               */
@@ -42,9 +45,10 @@ int main(int argc, char *argv[]) {
   char *default_inname = "input.ppm";
   char *output_filename = NULL;
   char *default_outname = "output.ppm";
-  int tolerance;
+
   int option_index;
-  int a, c;
+  int c;
+  unsigned long a;
   bool do_help;
   bool if_invalid;
   bool custom_in;
@@ -133,12 +137,6 @@ int main(int argc, char *argv[]) {
 
   /* finished applying defaults */
 
-  glutInit(&argc, argv);
-  glutInitDisplayMode(GLUT_RGB | GLUT_SINGLE);
-  glutInitWindowSize(640, 480);
-  glutInitWindowPosition(100, 100);
-  glutCreateWindow("VPUP8");
-
   Init(input_filename);
 
   /***************************************************************************/
@@ -146,7 +144,13 @@ int main(int argc, char *argv[]) {
   /***************************************************************************/
 
   /* processing */
-
+  printf("avant process\n");
+  process(image);
+  printf("apres process\n");
+//  for (a= 0; a < image->nb_zones; a++)
+//	black_border(image, image->zones[a]);
+    for(a = 0; a < image->nb_zones; a++)
+        invert_border(image, image->zones[a]);
   /* écriture du résultat */
   imagesave_PPM(output_filename, image);
 
