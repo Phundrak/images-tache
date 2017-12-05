@@ -18,7 +18,8 @@
 int ImageLoad_PPM(char *filename, Image *img) {
   char d, buff[16];
   FILE *fp;
-  int b, c, i, rgb_comp_color, size, sizex, sizey;
+  int b, c, rgb_comp_color;
+  unsigned long size, sizex, sizey, i;
   GLubyte tmp, *ptrdeb, *ptrfin, *lastline;
   Pixel_t pix;
 
@@ -71,7 +72,7 @@ int ImageLoad_PPM(char *filename, Image *img) {
 
   /* allocation memoire */
   size = img->sizeX * img->sizeY * 3;
-  printf("Size image %lu %lu => %d\n", img->sizeX, img->sizeY, size);
+  printf("Size image %lu %lu => %lu\n", img->sizeX, img->sizeY, size);
   img->data = (GLubyte *)malloc((size_t)size * sizeof(GLubyte));
   assert(img->data);
 
@@ -102,10 +103,12 @@ int ImageLoad_PPM(char *filename, Image *img) {
   PDEB("%s:%d Image loaded, generating pixel strucs\n", __FILE__, __LINE__);
 
   img->pixels = (Pixel_t *)malloc(sizeof(Pixel_t) * img->sizeX * img->sizeY);
+  for (i = 0; i < img->sizeX * img->sizeY; i++)
+    img->pixels[i] = NULL;
   for (i = 0; i < size; i += 3)
     img->pixels[i / 3] =
         new_pixel(&img->data[i], &img->data[i + 1], &img->data[i + 2],
-                  i % img->sizeX, i / img->sizeY);
+                  (i / 3) % img->sizeX, (i / 3) / img->sizeX);
 
   fclose(fp);
   return 1;

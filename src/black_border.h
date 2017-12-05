@@ -22,7 +22,7 @@
  * \param[in] g char correspondant a la valeur G a apposer au pixel
  * \param[in] b char correspondant a la valeur B a apposer au pixel
  */
- void put_pix_color(struct Pixel *pix, char r, char g, char b);
+ void put_pix_color(struct Pixel *pix, unsigned char r, unsigned char g, unsigned char b);
 
 /**
  * \brief Fonction detectant si le pixel est une bordure de la Zone

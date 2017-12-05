@@ -46,6 +46,8 @@ void img_add_zone(Image_t img, Zone_t zone) {
     (*img).capacity *= 2;
     temp = img->zones;
     (*img).zones = (Zone_t *)malloc(img->capacity * sizeof(Zone_t));
+    for (i = 0; i < img->capacity; i++)
+      (*img).zones[i] = NULL;
     for (i = 0; i < img->nb_zones; i++)
       (*img).zones[i] = temp[i];
     free(temp);
@@ -120,9 +122,7 @@ Pixel_t new_pixel(unsigned char *R, unsigned char *G, unsigned char *B,
   return pixel;
 }
 
-int abs(int x){
-	return (x < 0) ? -x : x;
-}
+int abs(int x) { return (x < 0) ? -x : x; }
 
 /* delete ********************************************************************/
 
