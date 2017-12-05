@@ -18,10 +18,9 @@
 int ImageLoad_PPM(char *filename, Image *img) {
   char d, buff[16];
   FILE *fp;
-  int b, c, rgb_comp_color;
-  unsigned long size, sizex, sizey, i;
+  int rgb_comp_color;
+  unsigned long size, sizex, sizey, i, c, b;
   GLubyte tmp, *ptrdeb, *ptrfin, *lastline;
-  Pixel_t pix;
 
   /* open PPM file for reading */
   fp = fopen(filename, "rb");
@@ -90,7 +89,7 @@ int ImageLoad_PPM(char *filename, Image *img) {
   for (b = 0; b < img->sizeY / 2; b++) {
     ptrdeb = img->data + b * sizex * 3;
     ptrfin = lastline - (b * sizex * 3);
-    PDEB("%d => %d %d\n", b, (int)ptrdeb, (int)ptrfin);
+    PDEB("%lu => %d %d\n", b, (int)ptrdeb, (int)ptrfin);
     for (c = 0; c < 3 * sizex; c++) {
       tmp = *ptrdeb;
       *ptrdeb = *ptrfin;
@@ -109,6 +108,9 @@ int ImageLoad_PPM(char *filename, Image *img) {
     img->pixels[i / 3] =
         new_pixel(&img->data[i], &img->data[i + 1], &img->data[i + 2],
                   (i / 3) % img->sizeX, (i / 3) / img->sizeX);
+  img->zones = (Zone_t *)malloc(sizeof(Zone_t) * img->sizeX * img->sizeY);
+  for (i = 0; i < img->sizeX * img->sizeY; i++)
+    img->zones[i] = NULL;
 
   fclose(fp);
   return 1;

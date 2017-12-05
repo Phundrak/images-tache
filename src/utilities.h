@@ -161,7 +161,7 @@ void img_add_zone(Image_t img, Zone_t zone);
  *  \return renvoie `true` si les pointeur sur zone sont egaux
  *                 `false` sinon
  */
-bool pix_in_area(struct Pixel *pix, struct Zone *zt);
+bool in_zone(struct Pixel *pix, struct Zone *zt);
 
 /**
  *  \brief Créé et initialise une zone

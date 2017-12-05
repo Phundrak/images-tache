@@ -38,26 +38,12 @@ bool strcomp(char *str1, char *str2) {
 /* img_add_zone **************************************************************/
 
 void img_add_zone(Image_t img, Zone_t zone) {
-  Zone_t *temp;
-  unsigned long i;
-
-  /* si la capacité de img->zones doit être accrue */
-  if (img->nb_zones >= img->capacity) {
-    (*img).capacity *= 2;
-    temp = img->zones;
-    (*img).zones = (Zone_t *)malloc(img->capacity * sizeof(Zone_t));
-    for (i = 0; i < img->capacity; i++)
-      (*img).zones[i] = NULL;
-    for (i = 0; i < img->nb_zones; i++)
-      (*img).zones[i] = temp[i];
-    free(temp);
-  }
-
   (*img).zones[img->nb_zones++] = zone;
 }
 
+/* in_zone *******************************************************************/
 
-bool pix_in_area(struct Pixel *pix, struct Zone *zt) {
+bool in_zone(Pixel_t pix, Zone_t zt) {
     return pix->zone == zt;
 }
 
@@ -68,10 +54,15 @@ Zone_t new_zone(Image_t img, Pixel_t pix) {
 
   /* création et initialisation de la zone */
 
-  zone = (Zone_t)malloc(sizeof(struct Zone));
+    PDEB("malloc pour la zone numéro %lu\n", img->nb_zones);
+
+  zone = (struct Zone*)malloc(sizeof(struct Zone));
+    PDEB("Malloc performed\n");
   (*zone).R = *pix->R;
   (*zone).G = *pix->G;
   (*zone).B = *pix->B;
+
+    PDEB("Deuxième malloc\n");
   (*zone).pixels = (Pixel_t *)malloc(sizeof(Pixel_t));
   (*zone).pixels[0] = pix;
   (*zone).nb_pixels = 1;
@@ -79,6 +70,8 @@ Zone_t new_zone(Image_t img, Pixel_t pix) {
 
   /* ajout de zone à pix */
   (*pix).zone = zone;
+
+    PDEB("Zone %lu créée, ajout à img\n", img->nb_zones);
 
   /* ajout de zone à img */
   img_add_zone(img, zone);
@@ -94,6 +87,7 @@ void zone_add_pix(Zone_t zone, Pixel_t pix) {
   if (zone->nb_pixels >= zone->capacity) {
     (*zone).capacity *= 2;
     temp = zone->pixels;
+      (*zone).pixels = NULL;
     (*zone).pixels = (Pixel_t *)malloc(zone->capacity * sizeof(Pixel_t));
     for (i = 0; i < zone->nb_pixels; i++)
       (*zone).pixels[i] = temp[i];

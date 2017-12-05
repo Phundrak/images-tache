@@ -34,6 +34,7 @@
 /*****************************************************************************/
 
 Image_t image; /*!< Variable globale de l'image */
+int tolerance; /*!< Variable globale pour la tolérance couleur */
 
 /*****************************************************************************/
 /*                               MAIN FUNCTION                               */
@@ -44,9 +45,10 @@ int main(int argc, char *argv[]) {
   char *default_inname = "input.ppm";
   char *output_filename = NULL;
   char *default_outname = "output.ppm";
-  int tolerance;
+
   int option_index;
-  int a, c;
+  int c;
+  unsigned long a;
   bool do_help;
   bool if_invalid;
   bool custom_in;
@@ -145,8 +147,10 @@ int main(int argc, char *argv[]) {
   printf("avant process\n");
   process(image);
   printf("apres process\n");
-  for (a= 0; a < image->nb_zones; a++)
-	black_border(image, image->zones[a]);
+//  for (a= 0; a < image->nb_zones; a++)
+//	black_border(image, image->zones[a]);
+    for(a = 0; a < image->nb_zones; a++)
+        invert_border(image, image->zones[a]);
   /* écriture du résultat */
   imagesave_PPM(output_filename, image);
 

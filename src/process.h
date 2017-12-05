@@ -61,13 +61,13 @@
  * \return renvoie `true` si la diferance est inferieur a la tolerance
  *                 `false` sinon
  */
- bool pix_to_add(struct Pixel *pix, struct Zone *zt);
+ bool tolerated(struct Pixel *pix, struct Zone *zt);
 
 /**
  * \brief Test si le pointeur zone du pixel est null
  *
  * \param[in] pix struct pixel contenant les donnees du Pixel
  */
- bool test_exist(struct Pixel *pix);
+ bool in_a_zone(struct Pixel *pix);
 
 #endif

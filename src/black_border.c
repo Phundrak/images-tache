@@ -7,19 +7,19 @@ bool pix_is_border(Image_t img, Pixel_t pix, Zone_t z) {
     return true;
 
   /* teste si le pixel à droite fait partie de la zone */
-  if (!pix_in_area(pix_at_img(img, pix->x + 1, pix->y), z))
+  if (!in_zone(pix_at_img(img, pix->x + 1, pix->y), z))
     return true;
 
   /* teste si le pixel à gauche fait partie de la zone */
-  if (!pix_in_area(pix_at_img(img, pix->x - 1, pix->y), z))
+  if (!in_zone(pix_at_img(img, pix->x - 1, pix->y), z))
     return true;
 
   /* teste si le pixel en haut fait partie de la zone */
-  if (!pix_in_area(pix_at_img(img, pix->x, pix->y + 1), z))
+  if (!in_zone(pix_at_img(img, pix->x, pix->y + 1), z))
     return true;
 
   /* teste si le pixel en bas fait partie de la zone */
-  if (!pix_in_area(pix_at_img(img, pix->x, pix->y - 1), z))
+  if (!in_zone(pix_at_img(img, pix->x, pix->y - 1), z))
     return true;
 
   return false;
@@ -33,9 +33,9 @@ void put_pix_color(Pixel_t pix, unsigned char r, unsigned char g,
 }
 
 void invert_color(Pixel_t pix) {
-  *pix->R = 255 - *pix->R;
-  *pix->G = 255 - *pix->G;
-  *pix->B = 255 - *pix->B;
+  *pix->R = (unsigned char) (255 - *pix->R);
+  *pix->G = (unsigned char) (255 - *pix->G);
+  *pix->B = (unsigned char) (255 - *pix->B);
 }
 
 void black_border(Image_t img, Zone_t z) {
