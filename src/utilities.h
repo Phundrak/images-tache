@@ -46,8 +46,14 @@
   printf
 #endif
 
+/**
+ * Nombre maximal de zones détectables et taille de `image->zones`
+ */
 #define NBCOLORSMAX 100000
-#define NBSEGMAX 100000
+/**
+ * Nombre maximal de segments par zones
+ */
+#define NBSEGMAX 1000000
 
 /*****************************************************************************/
 /*                     FORWARD DECLARATIONS AND TYPEDEFS                     */
@@ -81,7 +87,8 @@ struct Image {
   unsigned long sizeY; /*!< Hauteur de l'image (en pixels) */
   GLubyte *data;   /*!< Données brutes de l'image (vecteur unidimensionnel) */
   Pixel_t *pixels; /*!< Données raffinées de l'image, voir \ref Pixel */
-  Zone_t zones[NBCOLORSMAX]; /*!< Vecteur de vecteurs de segments, regroupés par couleur */
+  Zone_t zones[NBCOLORSMAX]; /*!< Vecteur de vecteurs de segments, regroupés
+ *                                par couleur */
   unsigned long nb_zones;
 };
 
@@ -102,6 +109,13 @@ struct Pixel {
   bool processed;    /*!< Est-ce que le pixel a déjà été traité */
 };
 
+/**
+ * \brief Conteneur d’une zone
+ *
+ * Conteneur de zone contenant les couleurs de base de la zone, un vecteur de
+ * segments appartenant à ladite zone, et un compteur de segments réellement
+ * stockés dans ledit vecteur.
+ */
 struct Zone {
   unsigned char R;  /*!< Valeur R du pixel d’origine du segment */
   unsigned char G;  /*!< Valeur G du pixel d’origine du segment */
@@ -126,28 +140,34 @@ struct Segment {
 /*                           FUNCTION DECLARATIONS                           */
 /*****************************************************************************/
 
-
+/**
+ * \brief Retourne la valeur absolue du paramètre x
+ * @param x Valeur dont on souhaite obtenir la valeur absolue
+ * @return Retourne la valeur absolue du paramètre x
+ */
 int abs(int x);
 
 /**
- * \brief Test si le pixel est dans la tolerance de la zone en parametre
+ * \brief Teste si la couleur du pixel est dans la zone de tolérance de la zone
  *
- * la fonction calcule chaque diferance de % des valeur R, G, B du Pixel
- * par rapport a la zone en parametre
+ * La fonction calcule une estimation de la différence de couleur entre celle
+ * du pixel passé en argument et la couleur de référence de la zone. Si le
+ * pourcentage obtenu est moindre que la tolérance globale, alors la fonction
+ * renverra `true`, sinon elle renverra `false`.
  *
- * \param[in] pix struct Pixel contenant les donnees du pixel
- * \param[in] zt struct Zone contenant les information sur la Zone
- * \return renvoie `true` si la diferance est inferieur a la tolerance
- *                 `false` sinon
+ * \param[in] pix \ref Pixel testé
+ * \param[in] zt \ref Zone contenant la couleur de référence
+ * \return Renvoie `true` si le pixel est toléré, `false` sinon
  */
 bool tolerated(Pixel_t pix, Zone_t zt);
 
 /**
  *  \brief Ajoute une zone à une image
  *
- *  Ajoute la zone passée en argument à l'image passée en argument. Si
- *  nécessaire, le vecteur contenant les pointeurs de zones verra sa capacité
- *  doublée.
+ *  Ajoute la zone passée en argument à l'image passée en argument. Cela
+ *  incrémente le membre `nb_zones` de l’image de 1 et ajoute la zone après la
+ *  dernière ajoutée, ou en première position s’il n’y en a pas d’autre qui
+ *  furent rajoutées avant.
  *
  *  \param[in] zone \ref Zone à ajouter à l'image
  */
@@ -160,15 +180,15 @@ void zone_add_segment(Zone_t zone, Segment_t segment);
  *
  *  Créé un nouveau pixel référençant les valeurs RGB du vecteur `data` de la
  *  structure d'image. Ses coordonnées sont également initialisées à un
- *  équivalent à deux dimensions du tableau `data`, et son pointeur de zone est
- *  initialisé à `NULL`.
+ *  équivalent à deux dimensions du tableau `data`. Il est automatiquement
+ *  marqué comme non-traité (`processed=false`).
  *
  *  \param[in] R Pointeur vers la valeur R dans le tableau `data`
  *  \param[in] G Pointeur vers la valeur G dans le tableau `data`
  *  \param[in] B Pointeur vers la valeur B dans le tableau `data`
  *  \param[in] x Coordonnées en abscisse (équivalence)
  *  \param[in] y Coordonnées en ordonnée (équivalence)
- *  \return Renvoie un pointeur vers un nouveau \ref Pixel
+ *  \return Renvoie un pointeur \ref Pixel_t vers un nouveau \ref Pixel
  */
 Pixel_t new_pixel(unsigned char *R, unsigned char *G, unsigned char *B,
                   unsigned long x, unsigned long y);
@@ -182,19 +202,18 @@ Pixel_t new_pixel(unsigned char *R, unsigned char *G, unsigned char *B,
  *
  *  \param[in] x Position en abscisse du pixel
  *  \param[in] y Position en ordonnée du pixel
- *  \return Pointeur sur le \ref Pixel voulu, `NULL` si les dimensions sont hors
- *          image.
+ *  \return Pointeur sur le \ref Pixel voulu, `NULL` si les coordonnées sont
+ *          hors image.
  */
 Pixel_t pix_at_img(unsigned long x, unsigned long y);
 
 /**
  *  \brief Créé et initialise une zone
  *
- *  Créé une nouvelle zone qui sera ajoutée à la structure \ref Image passée en
- *  premier argument. Les valeurs RGB de la zone seront basées sur les valeurs
- *  RGB du \ref Pixel. La zone sera également définie comme étant la zone
- *  d'appartenance du pixel. La fonction renvoie un pointeur sur la zone
- *  nouvellement créée.
+ *  Créé une nouvelle zone qui sera ajoutée à la variable globale `image`. Les
+ *  valeurs RGB de la zone seront basées sur les valeurs RGB du \ref Pixel
+ *  passé en argument. Tous les éléments du vecteur membre `segment` sont
+ *  initialisés à `NULL`.
  *
  *  \param[in] pix Pixel de base de la zone
  *  \return Retourne un pointeur sur la nouvelle zone
@@ -204,10 +223,8 @@ Zone_t new_zone(Pixel_t pix);
 /**
  *  \brief Suppression sécurisé d'un objet \ref Image
  *
- *  Supprime un objet \ref Image ainsi que tous les objets référencés par
- *  pointeurs au sein de l'objet.
- *
- *  \param[in] img Objet \ref Image à supprimer.
+ *  Supprime la variable globale de l’image ainsi que toutes les zones mémoire
+ *  dynamiquement allouées contenues en son sein.
  */
 void delete();
 /**
@@ -217,7 +234,5 @@ void delete();
  *  possibles
  */
 void printhelp();
-
-void black_border();
 
 #endif /* IMGTACHES_SRC_UTILITIES_H_ */
