@@ -83,21 +83,21 @@ int ImageLoad_PPM(char *filename, Image *img) {
 
   /* remettre l'image dans le bon sens */
   /* printf("debut %ld fin %ld\n", (int)img->data, (int)img->data + size); */
-  sizex = img->sizeX;
-  sizey = img->sizeY;
-  lastline = img->data + size - sizex * 3;
-  for (b = 0; b < img->sizeY / 2; b++) {
-    ptrdeb = img->data + b * sizex * 3;
-    ptrfin = lastline - (b * sizex * 3);
-    PDEB("%lu => %d %d\n", b, (int)ptrdeb, (int)ptrfin);
-    for (c = 0; c < 3 * sizex; c++) {
-      tmp = *ptrdeb;
-      *ptrdeb = *ptrfin;
-      *ptrfin = tmp;
-      ptrfin++;
-      ptrdeb++;
-    }
-  }
+//  sizex = img->sizeX;
+//  sizey = img->sizeY;
+//  lastline = img->data + size - sizex * 3;
+//  for (b = 0; b < img->sizeY / 2; b++) {
+//    ptrdeb = img->data + b * sizex * 3;
+//    ptrfin = lastline - (b * sizex * 3);
+//    PDEB("%lu => %d %d\n", b, (int)ptrdeb, (int)ptrfin);
+//    for (c = 0; c < 3 * sizex; c++) {
+//      tmp = *ptrdeb;
+//      *ptrdeb = *ptrfin;
+//      *ptrfin = tmp;
+//      ptrfin++;
+//      ptrdeb++;
+//    }
+//  }
 
   PDEB("%s:%d Image loaded, generating pixel structs\n", __FILE__, __LINE__);
   /* PIXEL STRUCTS */

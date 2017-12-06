@@ -81,16 +81,16 @@ void invert_color(Pixel_t pix) {
 }
 
 void black_border() {
-  unsigned long i, j;
-  Pixel_t pix;
+  unsigned long i, j, k;
+  Pixel_t pix1, pix2;
   Segment_t seg;
 
   for(i = 0; image->zones[i]; i++) {
     for(j = 0; image->zones[i]->segment[j]; j++) {
       seg = image->zones[i]->segment[j];
-//      change_color(pix_at_img(seg->xg, seg->y), 0, 0, 0);
-//      change_color(pix_at_img(seg->xd, seg->y), 0, 0, 0);
+
       invert_color(pix_at_img(seg->xd, seg->y));
+      invert_color(pix_at_img(seg->xg, seg->y));
     }
   }
 }

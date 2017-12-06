@@ -47,7 +47,7 @@
 #endif
 
 #define NBCOLORSMAX 100000
-#define NBSEGMAX 50000
+#define NBSEGMAX 100000
 
 /*****************************************************************************/
 /*                     FORWARD DECLARATIONS AND TYPEDEFS                     */
