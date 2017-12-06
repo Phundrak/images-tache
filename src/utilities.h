@@ -14,6 +14,7 @@
 
 #include <GL/gl.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 /*****************************************************************************/
 /*                             DEFINE DIRECTIVES                             */
@@ -45,6 +46,9 @@
   printf
 #endif
 
+#define NBCOLORSMAX 100000
+#define NBSEGMAX 50000
+
 /*****************************************************************************/
 /*                     FORWARD DECLARATIONS AND TYPEDEFS                     */
 /*****************************************************************************/
@@ -58,6 +62,9 @@ typedef struct Pixel *Pixel_t;
 struct Zone;
 typedef struct Zone Zone;
 typedef struct Zone *Zone_t;
+struct Segment;
+typedef struct Segment Segment;
+typedef struct Segment *Segment_t;
 
 /*****************************************************************************/
 /*                             STRUCT DECLARATIONS                           */
@@ -74,9 +81,8 @@ struct Image {
   unsigned long sizeY; /*!< Hauteur de l'image (en pixels) */
   GLubyte *data;   /*!< Données brutes de l'image (vecteur unidimensionnel) */
   Pixel_t *pixels; /*!< Données raffinées de l'image, voir \ref Pixel */
-  Zone_t *zones;   /*!< Liste des zones de l'image, voir \ref Zone */
-  unsigned long nb_zones; /*!< Nombre de zones dans le membre `zones` */
-  unsigned long capacity; /*!< Capacité de stockage du membre `zones` */
+  Zone_t zones[NBCOLORSMAX]; /*!< Vecteur de vecteurs de segments, regroupés par couleur */
+  unsigned long nb_zones;
 };
 
 /**
@@ -88,55 +94,53 @@ struct Image {
  *  plutôt que d'avoir à passer par des fonctions de conversion.
  */
 struct Pixel {
-  unsigned char *R; /*!< Pointeur vers la valeur R du pixel */
-  unsigned char *G; /*!< Pointeur vers la valeur G du pixel */
-  unsigned char *B; /*!< Pointeur vers la valeur B du pixel */
-  unsigned long x;  /*!< Positionnement en largeur dans l'image du pixel */
-  unsigned long y;  /*!< Positionnement en hauteur dans l'image du pixel */
-  Zone_t zone;      /*!< \ref Zone d'appartenance du pixel */
+  unsigned char *R;  /*!< Pointeur vers la valeur R du pixel */
+  unsigned char *G;  /*!< Pointeur vers la valeur G du pixel */
+  unsigned char *B;  /*!< Pointeur vers la valeur B du pixel */
+  unsigned long x;   /*!< Positionnement en largeur dans l'image du pixel */
+  unsigned long y;   /*!< Positionnement en hauteur dans l'image du pixel */
+  bool processed;    /*!< Est-ce que le pixel a déjà été traité */
+};
+
+struct Zone {
+  unsigned char R;  /*!< Valeur R du pixel d’origine du segment */
+  unsigned char G;  /*!< Valeur G du pixel d’origine du segment */
+  unsigned char B;  /*!< Valeur B du pixel d’origine du segment */
+  Segment_t segment[NBSEGMAX]; /*!< Liste des segments de la zone */
+  unsigned long nb_segment;
 };
 
 /**
- *  \brief Conteneur pour une zone d'image
+ *  \brief Conteneur de segments de couleur
  *
- *  Conteneur de zone d'image, contenant la couleur du pixel d'origine et la
- *  liste des pixels appartenant à la zone.
+ *  Contient un segment de couleur RGB sur la ligne y, allant de xg (extrême
+ *  gauche) à xd (extrême droit).
  */
-struct Zone {
-  char R;                  /*!< Valeur R du pixel d'origine */
-  char G;                  /*!< Valeur G du pixel d'origine */
-  char B;                  /*!< Valeur B du pixel d'origine */
-  Pixel_t *pixels;         /*!< Liste des pixels de la zone */
-  unsigned long nb_pixels; /*!< Nombre de pixels dans la zone */
-  unsigned long capacity;  /*!< Capacité du membre `nb_pixels` */
+struct Segment {
+  unsigned long y;  /*!< Ligne sur laquelle se trouve le segment */
+  unsigned long xg; /*!< extrême gauche du segment */
+  unsigned long xd; /*!< extrême droit du segment */
 };
 
 /*****************************************************************************/
 /*                           FUNCTION DECLARATIONS                           */
 /*****************************************************************************/
 
-/**
- *  \brief Affichage de l'aide
- *
- *  Affiche le texte d'aide à l'utilisation du programme, incluant les arguments
- *  possibles
- */
-void printhelp();
-
-/**
- *  \brief Comparateur de chaîne de caractères
- *
- *  Compare deux chaînes de caractères C (`char*`). La fonction ne
- *  modifie pas les deux chaînes de caractères.
- *
- *  \param[in] str1 Première chaîne de caractères
- *  \param[in] str2 Seconde chaîne de caractères
- *  \return Renvoie `true` si les deux chaînes de caractères sont identiques,
- *          `false` sinon
- */
-bool strcomp(char *str1, char *str2);
 
 int abs(int x);
+
+/**
+ * \brief Test si le pixel est dans la tolerance de la zone en parametre
+ *
+ * la fonction calcule chaque diferance de % des valeur R, G, B du Pixel
+ * par rapport a la zone en parametre
+ *
+ * \param[in] pix struct Pixel contenant les donnees du pixel
+ * \param[in] zt struct Zone contenant les information sur la Zone
+ * \return renvoie `true` si la diferance est inferieur a la tolerance
+ *                 `false` sinon
+ */
+bool tolerated(Pixel_t pix, Zone_t zt);
 
 /**
  *  \brief Ajoute une zone à une image
@@ -145,64 +149,11 @@ int abs(int x);
  *  nécessaire, le vecteur contenant les pointeurs de zones verra sa capacité
  *  doublée.
  *
- *  \param[out] img \ref Image à laquelle ajouter la zone
  *  \param[in] zone \ref Zone à ajouter à l'image
  */
-void img_add_zone(Image_t img, Zone_t zone);
+void img_add_zone(Zone_t zone);
 
-
-/**
- *  \brief Test si la zone du pixel est egal a la zone en parametre
- *
- *  La fonction test si le pointeur de struct Zone du pixel est egal a la Zone
- *
- *  \param[in] pix struct Pixel contenant les donnees du pixel
- *  \param[in] zt struct Zone contenant les information de la zone
- *  \return renvoie `true` si les pointeur sur zone sont egaux
- *                 `false` sinon
- */
-bool in_zone(struct Pixel *pix, struct Zone *zt);
-
-/**
- *  \brief Créé et initialise une zone
- *
- *  Créé une nouvelle zone qui sera ajoutée à la structure \ref Image passée en
- *  premier argument. Les valeurs RGB de la zone seront basées sur les valeurs
- *  RGB du \ref Pixel. La zone sera également définie comme étant la zone
- *  d'appartenance du pixel. La fonction renvoie un pointeur sur la zone
- *  nouvellement créée.
- *
- *  \param[out] img Image à laquelle la zone doit être ajoutée
- *  \param[in] pix Pixel de base de la zone
- *  \return Retourne un pointeur sur la nouvelle zone
- */
-Zone_t new_zone(Image_t img, Pixel_t pix);
-
-/**
- *  \brief Ajoute à une zone un pixel
- *
- *  Ajoute à la \ref Zone passée en argument le \ref Pixel passé en argument. La
- *  zone sera également définie comme étant la zone du pixel.
- *
- *  \param[out] zone \ref Zone à laquelle le pixel sera ajouté
- *  \param[in] pix \ref Pixel ajouté à la zone
- */
-void zone_add_pix(Zone_t zone, Pixel_t pix);
-
-/**
- *  \brief Retourne le pixel correspondant à img[y][x]
- *
- *  Retourne le pixel correspondant à img[y][x] dans le cas où les données
- *  seraient stockées dans un vecteur à deux dimensions (une pour la hauteur de
- *  l'image, une pour la longueur) au lieu du vecteur unidimensionnel réel.
- *
- *  \param[in] img \ref Image dans laquelle nous souhaitons récupérer un pixel.
- *  \param[in] x Position en abscisse du pixel
- *  \param[in] y Position en ordonnée du pixel
- *  \return Pointeur sur le \ref Pixel voulu, `NULL` si les dimensions sont hors
- *          image.
- */
-Pixel_t pix_at_img(Image_t img, unsigned long x, unsigned long y);
+void zone_add_segment(Zone_t zone, Segment_t segment);
 
 /**
  *  \brief Créé un nouveau pixel
@@ -223,6 +174,34 @@ Pixel_t new_pixel(unsigned char *R, unsigned char *G, unsigned char *B,
                   unsigned long x, unsigned long y);
 
 /**
+ *  \brief Retourne le pixel correspondant à img[y][x]
+ *
+ *  Retourne le pixel correspondant à img[y][x] dans le cas où les données
+ *  seraient stockées dans un vecteur à deux dimensions (une pour la hauteur de
+ *  l'image, une pour la longueur) au lieu du vecteur unidimensionnel réel.
+ *
+ *  \param[in] x Position en abscisse du pixel
+ *  \param[in] y Position en ordonnée du pixel
+ *  \return Pointeur sur le \ref Pixel voulu, `NULL` si les dimensions sont hors
+ *          image.
+ */
+Pixel_t pix_at_img(unsigned long x, unsigned long y);
+
+/**
+ *  \brief Créé et initialise une zone
+ *
+ *  Créé une nouvelle zone qui sera ajoutée à la structure \ref Image passée en
+ *  premier argument. Les valeurs RGB de la zone seront basées sur les valeurs
+ *  RGB du \ref Pixel. La zone sera également définie comme étant la zone
+ *  d'appartenance du pixel. La fonction renvoie un pointeur sur la zone
+ *  nouvellement créée.
+ *
+ *  \param[in] pix Pixel de base de la zone
+ *  \return Retourne un pointeur sur la nouvelle zone
+ */
+Zone_t new_zone(Pixel_t pix);
+
+/**
  *  \brief Suppression sécurisé d'un objet \ref Image
  *
  *  Supprime un objet \ref Image ainsi que tous les objets référencés par
@@ -230,6 +209,15 @@ Pixel_t new_pixel(unsigned char *R, unsigned char *G, unsigned char *B,
  *
  *  \param[in] img Objet \ref Image à supprimer.
  */
-void delete(Image_t img);
+void delete();
+/**
+ *  \brief Affichage de l'aide
+ *
+ *  Affiche le texte d'aide à l'utilisation du programme, incluant les arguments
+ *  possibles
+ */
+void printhelp();
+
+void black_border();
 
 #endif /* IMGTACHES_SRC_UTILITIES_H_ */

@@ -14,7 +14,7 @@
  * \param[in] pix struct Pixel contenant les donnees du Pixel
  * \param[in] z struct Zone contenant les information de la Zone
  */
-bool pix_is_border(Image_t img, Pixel_t pix, Zone_t z);
+//bool pix_is_border(Image_t img, Pixel_t pix, Zone_t z);
 
 /**
  * \brief Fonction d'initialisation de couleur de Pixel
@@ -26,13 +26,13 @@ bool pix_is_border(Image_t img, Pixel_t pix, Zone_t z);
  * \param[in] g char correspondant a la valeur G a apposer au pixel
  * \param[in] b char correspondant a la valeur B a apposer au pixel
  */
-void put_pix_color(Pixel_t pix, unsigned char r, unsigned char g, unsigned char b);
+//void put_pix_color(Pixel_t pix, unsigned char r, unsigned char g, unsigned char b);
 
 /**
  *  \brief Enversion de al couleur d’un \ref Pixel
  *  \param[out] pix \ref Pixel dont la couleur doit être inversée
  */
-void invert_color(Pixel_t pix);
+//void invert_color(Pixel_t pix);
 
 /**
  * \brief Fonction principal de la modification des bordure en noir
@@ -43,7 +43,7 @@ void invert_color(Pixel_t pix);
  * \param[in] img struct Image contenant les information de l'Image
  * \param[in] z struct Zone contenant les donnees de la Zone
  */
-void black_border(struct Image *img, struct Zone *z);
+//void black_border(struct Image *img, struct Zone *z);
 
 /**
  *  \brief Inverse la couleur des pixels d’une zone se trouvant sur sa bordure
@@ -54,6 +54,6 @@ void black_border(struct Image *img, struct Zone *z);
  *  \param[in] img Image contenant la zone
  *  \param[out] z Zone à gérer
  */
-void invert_border(Image_t img, Zone_t z);
+//void invert_border(Image_t img, Zone_t z);
 
 #endif

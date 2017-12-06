@@ -1,3 +1,4 @@
+/*
 #include "utilities.h"
 #include <stdio.h>
 
@@ -7,29 +8,25 @@ extern int tolerance;
 
 bool in_a_zone(struct Pixel *pix) { return !pix->zone ? false : true; }
 
-bool tolerated(struct Pixel *pix, struct Zone *zt) {
-  int diff_R, diff_G, diff_B;
-    bool res;
-  diff_R = (abs((int)zt->R - (int)*pix->R) * 100) / 255;
-  diff_G = (abs((int)zt->G - (int)*pix->G) * 100) / 255;
-  diff_B = (abs((int)zt->B - (int)*pix->B) * 100) / 255;
-  res =  ((diff_R + diff_G + diff_B) / 3) <= tolerance;
-    return res;
-}
+
 
 void running_area(Pixel_t pix, Image_t img, Zone_t zt) {
   Pixel_t pix_eval;
 //  PDEB("%lu: debut du running area (%lu zones)\n", ++nb_appels, img->nb_zones);
 
-  /* si le pixel n'est pas dans la zone courante, on cesse l’évaluation */
+  */
+/* si le pixel n'est pas dans la zone courante, on cesse l’évaluation *//*
+
 //  if (!in_zone(pix, zt)) {
 //    return;
 //  }
 
-  /* si la couleur du pixel est tolérable pour la zone, on l’y ajoute et on
+  */
+/* si la couleur du pixel est tolérable pour la zone, on l’y ajoute et on
    * évalue les pixels voisins, sinon le pixel n'est pas éligible et
    * l’évaluation du pixel courant cesse
-   */
+   *//*
+
   if (!tolerated(pix, zt))
     return;
   zone_add_pix(zt, pix);
@@ -45,22 +42,30 @@ void running_area(Pixel_t pix, Image_t img, Zone_t zt) {
     printf("y + 1 = %lu\n", (*pix).y + 1);
   }
 
-  /* Évaluation pixel droit */
+  */
+/* Évaluation pixel droit *//*
+
   pix_eval = pix_at_img(img, pix->x + 1, pix->y);
   if (pix_eval && !in_a_zone(pix_eval))
     running_area(pix_eval, img, zt);
 
-  /* évaluation pixel gauche */
+  */
+/* évaluation pixel gauche *//*
+
   pix_eval = pix_at_img(img, pix->x - 1, pix->y);
   if (pix_eval && !in_a_zone(pix_eval))
     running_area(pix_eval, img, zt);
 
-  /* évaluation pixel haut */
+  */
+/* évaluation pixel haut *//*
+
   pix_eval = pix_at_img(img, pix->x, pix->y + 1);
   if (pix_eval && !in_a_zone(pix_eval))
     running_area(pix_eval, img, zt);
 
-  /* évaluation pixel bas */
+  */
+/* évaluation pixel bas *//*
+
   pix_eval = pix_at_img(img, pix->x, pix->y - 1);
   if (pix_eval && !in_a_zone(pix_eval))
     running_area(pix_eval, img, zt);
@@ -98,3 +103,4 @@ void process(struct Image *img) {
     }
   }
 }
+*/

@@ -13,15 +13,10 @@
 
 #include "interface.h"
 #include "ppm.h"
-#include "utilities.h"
-#include "process.h"
-#include "black_border.h"
+#include "algorithm.h"
 #include <getopt.h>
-#include <math.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
 
 /*****************************************************************************/
 /*                             DEFINE DIRECTIVES                             */
@@ -145,20 +140,22 @@ int main(int argc, char *argv[]) {
 
   /* processing */
   printf("avant process\n");
-  process(image);
+//  process(image);
+  make_zones();
   printf("apres process\n");
 //  for (a= 0; a < image->nb_zones; a++)
 //	black_border(image, image->zones[a]);
-    for(a = 0; a < image->nb_zones; a++)
-        invert_border(image, image->zones[a]);
+//    for(a = 0; a < image->nb_zones; a++)
+//        invert_border(image, image->zones[a]);
   /* écriture du résultat */
+  black_border();
   imagesave_PPM(output_filename, image);
 
   /***************************************************************************/
   /*                         CLEANING UP AND LEAVING                         */
   /***************************************************************************/
 
-  delete (image);
+  delete();
 
   PDEB("%s:%d freeing `input_filename`\n", __FILE__, __LINE__);
   if (custom_in)

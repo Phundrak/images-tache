@@ -49,20 +49,6 @@
  */
  void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt);
 
-
-/**
- * \brief Test si le pixel est dans la tolerance de la zone en parametre
- *
- * la fonction calcule chaque diferance de % des valeur R, G, B du Pixel
- * par rapport a la zone en parametre 
- *
- * \param[in] pix struct Pixel contenant les donnees du pixel
- * \param[in] zt struct Zone contenant les information sur la Zone
- * \return renvoie `true` si la diferance est inferieur a la tolerance
- *                 `false` sinon
- */
- bool tolerated(struct Pixel *pix, struct Zone *zt);
-
 /**
  * \brief Test si le pointeur zone du pixel est null
  *

@@ -99,8 +99,8 @@ int ImageLoad_PPM(char *filename, Image *img) {
     }
   }
 
-  PDEB("%s:%d Image loaded, generating pixel strucs\n", __FILE__, __LINE__);
-
+  PDEB("%s:%d Image loaded, generating pixel structs\n", __FILE__, __LINE__);
+  /* PIXEL STRUCTS */
   img->pixels = (Pixel_t *)malloc(sizeof(Pixel_t) * img->sizeX * img->sizeY);
   for (i = 0; i < img->sizeX * img->sizeY; i++)
     img->pixels[i] = NULL;
@@ -108,8 +108,10 @@ int ImageLoad_PPM(char *filename, Image *img) {
     img->pixels[i / 3] =
         new_pixel(&img->data[i], &img->data[i + 1], &img->data[i + 2],
                   (i / 3) % img->sizeX, (i / 3) / img->sizeX);
-  img->zones = (Zone_t *)malloc(sizeof(Zone_t) * img->sizeX * img->sizeY);
-  for (i = 0; i < img->sizeX * img->sizeY; i++)
+
+  img->nb_zones = 0;
+
+  for(i = 0; i < NBCOLORSMAX; i++)
     img->zones[i] = NULL;
 
   fclose(fp);

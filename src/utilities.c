@@ -10,101 +10,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* printhelp *****************************************************************/
+extern Image_t image;
+extern int tolerance;
 
-void printhelp() {
-  printf("Usage: images-tache [options...]\n\n"
-         "Options:\n"
-         "\t-h, --help\n"
-         "\t\tDisplay this.\n"
-         "\t-i <file>, --input-file <file>\n"
-         "\t\tFile to be processed. Unless specified, the default name is "
-         "\"input.bmp\"\n"
-         "\t-o, --output-file\n"
-         "\t\tOutput file. Unless specified, default name is \"output.bmp\"\n"
-         "\t-t <value>, --tolerance <value>\n"
-         "\t\tTolerance on the creation of the color regions, indicated by "
-         "percentage (0 - 100)\n");
+int abs(int x) {
+  return (x < 0) ? -x : x;
 }
 
-/* strcomp *******************************************************************/
-
-bool strcomp(char *str1, char *str2) {
-  for (; *str1 == *str2 && str1 && str2; ++str1, ++str2)
-    ;
-  return str1 == str2;
+bool tolerated(Pixel_t pix, Zone_t zt) {
+  int diff_R, diff_G, diff_B;
+  bool res;
+  diff_R = (abs((int)zt->R - (int)*pix->R) * 100) / 255;
+  diff_G = (abs((int)zt->G - (int)*pix->G) * 100) / 255;
+  diff_B = (abs((int)zt->B - (int)*pix->B) * 100) / 255;
+  res =  ((diff_R + diff_G + diff_B) / 3) <= tolerance;
+  return res;
 }
 
-/* img_add_zone **************************************************************/
-
-void img_add_zone(Image_t img, Zone_t zone) {
-  (*img).zones[img->nb_zones++] = zone;
+void img_add_zone(Zone_t zone) {
+  image->zones[image->nb_zones++] = zone;
 }
 
-/* in_zone *******************************************************************/
-
-bool in_zone(Pixel_t pix, Zone_t zt) { return pix->zone == zt; }
-
-/* new_zone ******************************************************************/
-
-Zone_t new_zone(Image_t img, Pixel_t pix) {
-  Zone_t zone;
-
-  /* création et initialisation de la zone */
-
-  PDEB("malloc pour la zone numéro %lu\n", img->nb_zones);
-
-  zone = (struct Zone *)malloc(sizeof(struct Zone));
-  PDEB("Malloc performed\n");
-  (*zone).R = *pix->R;
-  (*zone).G = *pix->G;
-  (*zone).B = *pix->B;
-
-  PDEB("Deuxième malloc\n");
-  (*zone).pixels = (Pixel_t *)malloc(sizeof(Pixel_t));
-  (*zone).pixels[0] = pix;
-  (*zone).nb_pixels = 1;
-  (*zone).capacity = 1;
-
-  /* ajout de zone à pix */
-  (*pix).zone = zone;
-
-  PDEB("Zone %lu créée, ajout à img\n", img->nb_zones);
-
-  /* ajout de zone à img */
-  img_add_zone(img, zone);
-
-  return zone;
+void zone_add_segment(Zone_t zone, Segment_t segment) {
+  zone->segment[zone->nb_segment++] = segment;
 }
 
-/* zone_add_pix **************************************************************/
-void zone_add_pix(Zone_t zone, Pixel_t pix) {
-  Pixel_t *temp;
-  unsigned long i;
-
-  if (zone->nb_pixels >= zone->capacity) {
-    (*zone).capacity *= 2;
-    temp = zone->pixels;
-    (*zone).pixels = NULL;
-    (*zone).pixels = (Pixel_t *)malloc(zone->capacity * sizeof(Pixel_t));
-    for (i = 0; i < zone->nb_pixels; i++)
-      (*zone).pixels[i] = temp[i];
-    free(temp);
-  }
-
-  (*zone).pixels[zone->nb_pixels++] = pix;
-  (*pix).zone = zone;
-}
-
-/* pix_at_img ****************************************************************/
-
-Pixel_t pix_at_img(Image_t img, unsigned long x, unsigned long y) {
-  if (x >= img->sizeX || y >= img->sizeY)
+Pixel_t pix_at_img(unsigned long x, unsigned long y) {
+  if (x >= image->sizeX || y >= image->sizeY)
     return NULL;
-  return img->pixels[x + y * img->sizeX];
+  return image->pixels[x + y * image->sizeX];
 }
-
-/* new_pixel *****************************************************************/
 
 Pixel_t new_pixel(unsigned char *R, unsigned char *G, unsigned char *B,
                   unsigned long x, unsigned long y) {
@@ -115,21 +50,51 @@ Pixel_t new_pixel(unsigned char *R, unsigned char *G, unsigned char *B,
   (*pixel).B = B;
   (*pixel).x = x;
   (*pixel).y = y;
-  (*pixel).zone = NULL;
+  (*pixel).processed = false;
   return pixel;
 }
 
-int abs(int x) { return (x < 0) ? -x : x; }
+Zone_t new_zone(Pixel_t pix) {
+  Zone_t zone;
+  unsigned long i;
 
-/* delete ********************************************************************/
+  zone = (Zone_t)malloc(sizeof(Zone));
+  zone->R = *pix->R;
+  zone->G = *pix->G;
+  zone->B = *pix->B;
+  zone->nb_segment = 0;
+  for(i = 0; i < NBSEGMAX; i++) {
+    zone->segment[i] = NULL;
+  }
 
-void delete (Image_t img) {
+  return zone;
+}
+
+void delete () {
   unsigned long i, size;
-  size = img->sizeX * img->sizeY;
+  size = image->sizeX * image->sizeY;
   for (i = 0; i < size; i++)
-    free(img->pixels[i]);
-  for (i = 0; i < img->nb_zones; i++)
-    free(img->zones[i]);
-  free(img->data);
-  free(img);
+    free(image->pixels[i]);
+  i = 0;
+  while(image->zones[i]) {
+    free(image->zones[i]);
+    i++;
+  }
+  free(image->data);
+  free(image);
+}
+
+void printhelp() {
+  printf("Usage: images-tache [options...]\n\n"
+             "Options:\n"
+             "\t-h, --help\n"
+             "\t\tDisplay this.\n"
+             "\t-i <file>, --input-file <file>\n"
+             "\t\tFile to be processed. Unless specified, the default name is "
+             "\"input.bmp\"\n"
+             "\t-o, --output-file\n"
+             "\t\tOutput file. Unless specified, default name is \"output.bmp\"\n"
+             "\t-t <value>, --tolerance <value>\n"
+             "\t\tTolerance on the creation of the color regions, indicated by "
+             "percentage (0 - 100)\n");
 }
