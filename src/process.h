@@ -8,65 +8,73 @@
 
 
 /**
- * \brief Fonction principale de l'algo
+ * \brief Fonction principale de l'algorithme
  *
- * parcour les pixels de l'image test si il on une zone attribuee
- * si ce n'est le cas lance la fonction de mapping de la zone
+ * Parcours les pixels de l’image et teste s’ils ont une zone déjà attribée.
+ * Si ce n’est pas le cas, lance la fonction de mapping de zone `map_area`.
  *
- * \param[in] img struct Image
+ * \param[in] img \ref Image traitée
  */
  void process(struct Image *img);
 
 
 /**
- *    \brief Creation d'une nouvelle zone et lancement de running_area
+ * \brief Création d’une nouvelle zone basée sur le pixel courant
  *
- *  la fonction cree une nouvelle zone avec les valeur du pixel passez
- *  en parametre ajoute cette zone a la liste des zone dans la struct Image
- *  lance la fonction running_area
+ * La fonction créé une nouvelle zone vierge dont la couleur de référence se
+ * base sur le pixel courant. Ce dernier sera également ajouté dans la liste
+ * des pixels de la zone, et le pointeur de zone du pixel est initialisé vers
+ * la nouvelle zone. La zone sera ajoutée à la liste de zones de l’image
+ * traitée.
  *
- *  \param[in] pix \ref Pixel contenant les information du pixel
- *  \param[in] img \ref Image contenant les données de l'image
+ * \param[in] pix \ref Pixel courant
+ * \param[in] img \ref Image traitée
  */
  void map_area(struct Pixel *pix, struct Image *img);
 
 
 /**
- *   \brief Parcour les pixels adjacent au pixel de la appartenant a la zone
+ * \brief Parcours des pixels adjacents au pixel courant
  *
- * test si le pixel appartien a une zone 
- *   test si le pixel appartien a la zone passez en parametre
- *     si c'est le cas s'appel recursivement avec les coordonnees des pixels
- *     adjacant
- *     si non stop son execution
- *   si le pixel n'appartien pas deja a une zone la fonction test si les
- *   les couleurs du pixel sont inferieur au seuil de tolerance
- *     si c'est le cas alors la fonction ajoute la zone au pixel et inversement
+ * Pour chaque pixel adjacent au pixel courant, un test est réalisé pour savoir
+ * si le pixel appartient déjà à une zone. Si ce n’est pas le cas, un test est
+ * réalisé pour savoir si la couleur du pixel est tolérée par la couleur de
+ * référence de la zone courante. Si c’est le cas, la fonction `running_area`
+ * est appelée sur ce pixel qui sera ajouté à la liste de pixels de la zone, et
+ * le pixel référencera la zone courante comme étant la zone à laquelle il
+ * appartient.
  *
- *     \param[in] pix struct Pixel contenant les information du Pixel
- *     \param[in] img struct Image contenant les donees de l'Image
- *     \param[in] zt struct Zone contenant les information de la zone
+ * \param[in] pix \ref Pixel courant
+ * \param[in] img \ref Image traitée
+ * \param[in] zt \ref Zone courante
  */
  void running_area(struct Pixel *pix, struct Image *img, struct Zone *zt);
 
 
 /**
- * \brief Test si le pixel est dans la tolerance de la zone en parametre
+ * \brief Teste si la couleur du pixel est compatible avec la zone
  *
- * la fonction calcule chaque diferance de % des valeur R, G, B du Pixel
- * par rapport a la zone en parametre 
+ * La fonction calcule la différence en pourcentage de la couleur du pixel
+ * passé en arguments avec la couleur de référence de la zone passée en
+ * arguments. Si le pourentage obtenu est inférieur ou égal à la tolérance
+ * disponible en variable globale externe, alors la valeur `true` est renvoyée,
+ * sinon la valeur `false` l’est.
  *
- * \param[in] pix struct Pixel contenant les donnees du pixel
- * \param[in] zt struct Zone contenant les information sur la Zone
- * \return renvoie `true` si la diferance est inferieur a la tolerance
- *                 `false` sinon
+ * \param[in] pix \ref Pixel dont la couleur doit être testée
+ * \param[in] zt \ref Zone dont la couleur référence doit être testée
+ * \return Renvoie `true` si `pix` est compatible avec la couleur de `zt`,
+ *         `false` sinon.
  */
  bool tolerated(struct Pixel *pix, struct Zone *zt);
 
 /**
- * \brief Test si le pointeur zone du pixel est null
+ * \brief Teste si le pixel appartient déjà à une zone
  *
- * \param[in] pix struct pixel contenant les donnees du Pixel
+ * Le pixel n’appartient à une zone que si son pointeur de zone contient une
+ * valeur autre que `NULL`.
+ *
+ * \param[in] pix \ref Pixel à tester
+ * \return Renvoie `true` si le pixel appartient déjà à une zone, `false` sinon
  */
  bool in_a_zone(struct Pixel *pix);
 

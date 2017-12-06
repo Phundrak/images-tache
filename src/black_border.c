@@ -38,17 +38,6 @@ void invert_color(Pixel_t pix) {
   *pix->B = (unsigned char) (255 - *pix->B);
 }
 
-void black_border(Image_t img, Zone_t z) {
-  unsigned long x, y;
-
-  for (y = 0; y < img->sizeY; y++) {
-    for (x = 0; x < img->sizeX; x++) {
-      if (pix_is_border(img, pix_at_img(img, x, y), z))
-        put_pix_color(pix_at_img(img, x, y), 0, 0, 0);
-    }
-  }
-}
-
 void invert_border(Image_t img, Zone_t z) {
   unsigned long i;
   for (i = 0; i < z->nb_pixels; i++)

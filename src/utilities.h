@@ -136,6 +136,11 @@ void printhelp();
  */
 bool strcomp(char *str1, char *str2);
 
+/**
+ * \brief Renvoie la valeur absolue de l’entier pris en paramètres
+ * \param x Entier dont on souhaite obtenir la valeur absolue
+ * \return Retourne la valeur absolue de l’entier passé en argument
+ */
 int abs(int x);
 
 /**
